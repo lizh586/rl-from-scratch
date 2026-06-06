@@ -76,4 +76,4 @@ rl-from-scratch/
 
 ## 技术博客
 
-详细讲解见：[从零手写 DQN / PPO / SAC：三个强化学习算法的完整时间](https://example.com)（待发布）
+详细讲解见：[从零手写 DQN / PPO / SAC：三个强化学习算法的实战记录](https://zhuanlan.zhihu.com/p/2046555983841908330)
