@@ -1,6 +1,6 @@
 # RL from Scratch
 
-从零手写 DQN / PPO / SAC / REINFORCE，不依赖 RL 框架，只用 PyTorch + Gymnasium。CartPole / LunarLander / Pendulum 全部 solved。
+从零手写 RL 算法 + DL 核心组件，不依赖高级框架，只用 PyTorch / NumPy + Gymnasium。CartPole / LunarLander / Pendulum 全部 solved，所有手写组件与 PyTorch 参考实现误差 < 1e-4。
 
 ## Benchmark
 
@@ -53,19 +53,16 @@ rl-from-scratch/
 ├── README.md
 ├── requirements.txt
 ├── images/
-│   ├── dqn_lunarlander_reward.png
-│   └── ppo_lunarlander_reward.png
 ├── dqn/
-│   ├── dqn_handcraft.py            # CartPole
-│   └── dqn_handcraft_lunar.py      # LunarLander
 ├── ppo/
-│   ├── ppo_handcraft.py            # CartPole
-│   └── ppo_handcraft_lunar.py      # LunarLander
 ├── sac/
-│   └── sac_handcraft.py            # Pendulum
-└── reinforce/
-    ├── reinforce_cartpole.py
-    └── reinforce_baseline_cartpole.py
+├── reinforce/
+└── dl/
+    ├── autograd/          # NumPy 反向传播框架
+    ├── transformer/       # MHA + PE + EncoderBlock
+    ├── cnn/               # conv2d / LeNet / ResNet
+    ├── rnn/               # LSTM / GRU cell
+    └── tokenizer/         # BPE + Embedding
 ```
 
 ## 踩坑记录
@@ -73,6 +70,30 @@ rl-from-scratch/
 - **SAC Q 网络 lr 过大**：qf1_loss 频繁 spike（500-900），eval return 大幅振荡。lr 从 1e-3 降到 3e-4 + gradient clipping 后稳定。
 - **DQN epsilon 衰减过快**：每 episode 衰减导致 epsilon 过早趋近 0.01，探索不足。改为每 step 衰减。
 - **learning_starts 不够**：buffer 没填满就开始训练，数据多样性不足。延迟到 5000 steps 后启动训练。
+
+## DL 核心组件
+
+所有组件手写实现，与 PyTorch 参考结果逐项验证。
+
+| 组件 | 文件 | 验证 |
+|------|------|------|
+| NumPy 反向传播框架 | `dl/autograd/engine.py` `mlp.py` | 41 参数 MLP 梯度与 torch 误差 < 1e-5 |
+| Transformer Encoder | `dl/transformer/attention.py` | MHA + PE + EncoderBlock，全部维度测试通过 |
+| CNN | `dl/cnn/conv2d.py` `lenet.py` `resnet_block.py` | LeNet Fashion-MNIST 90.08% / ResNet 92.48% |
+| RNN | `dl/rnn/lstm_cell.py` `gru_cell.py` | LSTM diff 2.98e-8 / GRU diff 1.2e-7 |
+| BPE Tokenizer | `dl/tokenizer/bpe_tokenizer.py` `embedding_numpy.py` | encode/decode round-trip + Embedding 查表验证 |
+
+```bash
+# 反向传播框架
+python dl/autograd/engine.py
+
+# Transformer
+python dl/transformer/attention.py
+
+# RNN cell
+python dl/rnn/lstm_cell.py
+python dl/rnn/gru_cell.py
+```
 
 ## 技术博客
 
