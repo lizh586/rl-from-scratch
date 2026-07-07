@@ -62,7 +62,8 @@ rl-from-scratch/
     ├── transformer/       # MHA + PE + EncoderBlock
     ├── cnn/               # conv2d / LeNet / ResNet
     ├── rnn/               # LSTM / GRU cell
-    └── tokenizer/         # BPE + Embedding
+    ├── tokenizer/         # BPE + Embedding
+    └── llama/             # RoPE / RMSNorm / SwiGLU
 ```
 
 ## 踩坑记录
@@ -82,6 +83,11 @@ rl-from-scratch/
 | CNN | `dl/cnn/conv2d.py` `lenet.py` `resnet_block.py` | LeNet Fashion-MNIST 90.08% / ResNet 92.48% |
 | RNN | `dl/rnn/lstm_cell.py` `gru_cell.py` | LSTM diff 2.98e-8 / GRU diff 1.2e-7 |
 | BPE Tokenizer | `dl/tokenizer/bpe_tokenizer.py` `embedding_numpy.py` | encode/decode round-trip + Embedding 查表验证 |
+| RoPE 旋转位置编码 | `dl/llama/rope.py` | 复数推导 → 旋转矩阵 → frequency，forward/backward 梯度 < 1e-5 |
+| RMSNorm | `dl/llama/rmsnorm.py` | forward/backward 与 LayerNorm 逐项数值对比 |
+| SwiGLU 门控 FFN | `dl/llama/swiglu.py` | 手写 backward，3 个权重矩阵梯度 finite-diff < 1e-5 |
+
+LLaMA 系列基于标准 Transformer 的三项核心改进：RoPE 替代绝对位置编码（复数旋转矩阵，支持任意长度外推），RMSNorm 替代 LayerNorm（去均值、省计算），SwiGLU 替代标准 FFN（门控机制，3 矩阵参数/激活与 2 矩阵版本持平）。
 
 ```bash
 # 反向传播框架
@@ -93,6 +99,11 @@ python dl/transformer/attention.py
 # RNN cell
 python dl/rnn/lstm_cell.py
 python dl/rnn/gru_cell.py
+
+# LLaMA components
+python dl/llama/test_rope.py
+python dl/llama/test_rmsnorm.py
+python dl/llama/test_swiglu.py
 ```
 
 ## 技术博客
