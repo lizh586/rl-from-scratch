@@ -63,7 +63,7 @@ rl-from-scratch/
     ├── cnn/               # conv2d / LeNet / ResNet
     ├── rnn/               # LSTM / GRU cell
     ├── tokenizer/         # BPE + Embedding
-    └── llama/             # RoPE / RMSNorm / SwiGLU
+    └── llama/             # RoPE / RMSNorm / SwiGLU / GQA
 ```
 
 ## 踩坑记录
@@ -86,8 +86,9 @@ rl-from-scratch/
 | RoPE 旋转位置编码 | `dl/llama/rope.py` | 复数推导 → 旋转矩阵 → frequency，forward/backward 梯度 < 1e-5 |
 | RMSNorm | `dl/llama/rmsnorm.py` | forward/backward 与 LayerNorm 逐项数值对比 |
 | SwiGLU 门控 FFN | `dl/llama/swiglu.py` | 手写 backward，3 个权重矩阵梯度 finite-diff < 1e-5 |
+| GQA 分组查询注意力 | `dl/llama/gqa.py` | MHA 退化 diff=0，repeat_kv 分组验证通过 |
 
-LLaMA 系列基于标准 Transformer 的三项核心改进：RoPE 替代绝对位置编码（复数旋转矩阵，支持任意长度外推），RMSNorm 替代 LayerNorm（去均值、省计算），SwiGLU 替代标准 FFN（门控机制，3 矩阵参数/激活与 2 矩阵版本持平）。
+LLaMA 系列基于标准 Transformer 的三项核心改进：RoPE 替代绝对位置编码（复数旋转矩阵，支持任意长度外推），RMSNorm 替代 LayerNorm（去均值、省计算），SwiGLU 替代标准 FFN（门控机制，3 矩阵参数/激活与 2 矩阵版本持平）。GQA 在多头的 KV 对之间引入分组共享，MHA（组数=头数）和 MQA（组数=1）为其两个端点。
 
 ```bash
 # 反向传播框架
@@ -104,6 +105,7 @@ python dl/rnn/gru_cell.py
 python dl/llama/test_rope.py
 python dl/llama/test_rmsnorm.py
 python dl/llama/test_swiglu.py
+python dl/llama/test_gqa.py
 ```
 
 ## 技术博客
