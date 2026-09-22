@@ -37,7 +37,7 @@ if __name__ == "__main__":
         transforms.Normalize((0.5,), (0.5,))
     ])
 
-    trainset = torchvision.datasets.FashionMNIST(root='C:/Users/Rize/Desktop/Lee/playground/learning/rl/data', 
+    trainset = torchvision.datasets.FashionMNIST(root='C:/Users/Rize/Desktop/Lee/playground/learning/data', 
                                                 train = True,
                                                 download=True,
                                                 transform=transform
@@ -63,7 +63,7 @@ if __name__ == "__main__":
         print(f"Epoch {epoch+1}: avg loss = {avg_loss:.4f}")
 
     # 测试集上算准确率
-    testset = torchvision.datasets.FashionMNIST(root='C:/Users/Rize/Desktop/Lee/playground/learning/rl/data', 
+    testset = torchvision.datasets.FashionMNIST(root='C:/Users/Rize/Desktop/Lee/playground/learning/data', 
                                                 train = False,
                                                 download=True,
                                                 transform=transform

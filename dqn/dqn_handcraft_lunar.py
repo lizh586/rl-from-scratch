@@ -134,9 +134,9 @@ def main():
     plt.xlabel("Episode")
     plt.ylabel("Return")
     plt.title("DQN on LunarLander-v2")
-    plt.savefig("C:/Users/Rize/Desktop/Lee/playground/blog/images/dqn_lunarlander_reward.png")
+    plt.savefig("C:/Users/Rize/Desktop/Lee/playground/portfolio/blog/images/dqn_lunarlander_reward.png")
     plt.close()
-    print("Curve saved to blog/images/dqn_lunarlander_reward.png")
+    print("Curve saved to portfolio/blog/images/dqn_lunarlander_reward.png")
 
 
 if __name__ == "__main__":
